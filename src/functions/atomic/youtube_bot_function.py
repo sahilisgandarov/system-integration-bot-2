@@ -13,7 +13,7 @@ from bot_func_abc import AtomicBotFunctionABC
 try:
     import yt_dlp
     import imageio_ffmpeg
-except ImportError:
+except ImportError as exc:
     raise ImportError("yt-dlp or imageio_ffmpeg is required: pip install yt-dlp")
 
 
@@ -43,9 +43,10 @@ class YouTubeDownloaderFunction(AtomicBotFunctionABC):
         self._cb = CallbackData("yt_action", "video_id", "fmt_id", prefix="yt")
         self._sessions: dict = {}
         self._ffmpeg_path = None
+        self.bot = None
         try:
             self._ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
-        except Exception as e:
+        except RuntimeError as e:
             print(f"Failed to get ffmpeg via imageio-ffmpeg: {e}")
             self._ffmpeg_path = None
 
